@@ -50,6 +50,7 @@ namespace SEQ.App.AzureSecretCheck
           [SeqAppSetting(DisplayName = "Azure Tenant Id",
                Syntax = "code",
                IsOptional = false,
+               InputType = SettingInputType.Password,
                HelpText = "The Tenant ID of your Azure Instance")]
           public string? TenantId { get; set; }
           /// <summary>
@@ -58,6 +59,7 @@ namespace SEQ.App.AzureSecretCheck
           [SeqAppSetting(DisplayName = "Azure Client Id",
                Syntax = "code",
                IsOptional = false,
+               InputType = SettingInputType.Password,
                HelpText = "The Client ID of this App Registration, that has the necessary access to query expiry.")]
           public string? ClientId { get; set; }
           /// <summary>
@@ -66,6 +68,7 @@ namespace SEQ.App.AzureSecretCheck
           [SeqAppSetting(DisplayName = "Client Secret ",
                Syntax = "code",
                IsOptional = false,
+               InputType = SettingInputType.Password,
                HelpText = "The Client Secret for App Authentication.")]
           public string? ClientSecret { get; set; }
           /// <summary>
@@ -73,6 +76,7 @@ namespace SEQ.App.AzureSecretCheck
           /// </summary>
           [SeqAppSetting(DisplayName = "GraphScopes",
                Syntax = "code",
+               InputType = SettingInputType.LongText,
                IsOptional = false,
                HelpText = "Scopes for Graph API; enter one per line.")]
           public string? GraphScopes { get; set; }
@@ -82,6 +86,7 @@ namespace SEQ.App.AzureSecretCheck
           [SeqAppSetting(DisplayName = "Azure App Registration Object Ids",
                Syntax = "code",
                IsOptional = false,
+               InputType = SettingInputType.LongText,
                HelpText = "The App Registrations to check; enter one per line.")]
           public string? AppObjectIds { get; set; }
           /// <summary>
