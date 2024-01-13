@@ -108,9 +108,7 @@ namespace SEQ.App.AzureSecretCheck
           {
 
                _settings = new Settings();
-               Console.WriteLine($"1. {ClientId}");
                _settings.ClientId = ClientId;
-               Console.WriteLine($"2. {TenantId}");
                _settings.TenantId = TenantId;
                _settings.ClientSecret = ClientSecret;
                _settings.GraphScopes = GraphScopes.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
