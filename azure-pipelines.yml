@@ -25,12 +25,14 @@ steps:
   inputs:
     version: '7.x'
     includePreviewVersions: true # Required for preview versions
-  
+
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
     command: 'build'
-    configuration: $(buildConfiguration)
+    arguments: '-c $(buildConfiguration)'
+
 - task: NuGetCommand@2
   displayName: 'Pack Nuget'
   inputs:
