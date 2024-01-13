@@ -26,22 +26,19 @@ steps:
     version: '7.x'
     includePreviewVersions: true # Required for preview versions
 
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
     command: 'build'
+    projects: '*.csproj'
     arguments: '-c $(buildConfiguration)'
 
-- task: NuGetCommand@2
-  displayName: 'Pack Nuget'
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: $(solution)
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '1'
-    minorVersion: '0'
-    patchVersion: '0'
+    packagesToPack: 'AzureSecretCheck/*.csproj'
+    versioningScheme: 'off'
+    arguments: '-c $(buildConfiguration)'
     
 
 - task: NuGetCommand@2
