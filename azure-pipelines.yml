@@ -21,16 +21,16 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-#- task: VSBuild@1
-#  inputs:
-#    solution: '$(solution)'
-#    msbuildArgs: '/p:DeployOnBuild=false /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-#    platform: '$(buildPlatform)'
-#    configuration: '$(buildConfiguration)'
+- task: UseDotNet@2
+  inputs:
+    version: '7.x'
+    includePreviewVersions: true # Required for preview versions
+  
 - task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
   inputs:
     command: 'build'
-    projects: '$(solution)'
+    configuration: $(buildConfiguration)
 - task: NuGetCommand@2
   displayName: 'Pack Nuget'
   inputs:
