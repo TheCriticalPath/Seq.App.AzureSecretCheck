@@ -32,6 +32,15 @@ steps:
     includePreviewVersions: true # Required for preview versions
 
 - task: DotNetCoreCLI@2
+  displayName: 'NuGet restore'
+  inputs:
+    command: 'restore'
+    projects: '$(solution)'
+    feedsToUse: 'config'
+    nugetConfigPath: 'AzureSecretCheck/nuget.config'
+    verbosityRestore: 'Diagnostic'
+
+- task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
     command: 'build'
@@ -46,12 +55,12 @@ steps:
     versionEnvVar: 'nugetVersion'
     versioningScheme: 'byEnvVar'
     arguments: '-c $(buildConfiguration)'
-    
 
 - task: NuGetCommand@2
   displayName: 'Push Nuget'
   inputs:
     command: 'push'
+    includeReferencedProjects: true
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: '51b5df77-d834-4d80-ae86-c1eda4ccb8c3'
