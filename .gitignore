@@ -6,3 +6,4 @@ Terminal/bin
 Terminal/obj
 AzureSecretCheck/.DS_Store
 .DS_Store
+Terminal/Program.cs
