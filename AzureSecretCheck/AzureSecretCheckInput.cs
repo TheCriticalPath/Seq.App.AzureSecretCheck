@@ -77,7 +77,7 @@ namespace SEQ.App.AzureSecretCheck
           [SeqAppSetting(DisplayName = "GraphScopes",
                Syntax = "code",
                InputType = SettingInputType.LongText,
-               IsOptional = false,
+               IsOptional = true,
                HelpText = "Scopes for Graph API; enter one per line.")]
           public string? GraphScopes { get; set; }
           /// <summary>
