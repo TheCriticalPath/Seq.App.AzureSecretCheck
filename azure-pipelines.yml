@@ -13,6 +13,11 @@ variables:
   solution: 'AzureSecretCheck/*.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  major: '1'
+  minor: '0'
+  revision: $[counter(variables['minor'], 1)] # This will get reset every time minor gets bumped.
+  nugetVersion: '$(major).$(minor).$(revision)'
+
 
 steps:
 - task: NuGetToolInstaller@1
@@ -34,10 +39,12 @@ steps:
     arguments: '-c $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: 'NuGet pack'
   inputs:
     command: 'pack'
     packagesToPack: '$(solution)'
-    versioningScheme: 'off'
+    versionEnvVar: 'nugetVersion'
+    versioningScheme: 'byEnvVar'
     arguments: '-c $(buildConfiguration)'
     
 
