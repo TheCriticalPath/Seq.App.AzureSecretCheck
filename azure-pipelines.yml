@@ -42,7 +42,7 @@ steps:
   displayName: 'NuGet pack'
   inputs:
     command: 'pack'
-    packagesToPack: '$(solution)'
+    packagesToPack: 'AzureSecretCheck/*.nuspec'
     versionEnvVar: 'nugetVersion'
     versioningScheme: 'byEnvVar'
     arguments: '-c $(buildConfiguration)'
