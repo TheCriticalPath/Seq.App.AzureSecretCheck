@@ -1,5 +1,5 @@
 ﻿//https://github.com/janpieterz/seq-input-certificatecheck/blob/main/Seq.Input.CertificateCheck/Seq.Input.CertificateCheck.csproj
-
+//https://github.com/datalust/seq-app-httprequest/blob/dev/Build.ps1
 using System;
 using System.Threading.Tasks;
 using Microsoft.Graph;
@@ -14,7 +14,7 @@ using Seq.Apps;
 namespace SEQ.App.AzureSecretCheck
 {
 
-     [SeqApp("Check Azure AppReg Secrets", Description = "Check the expiration of Microsoft Azure App Registration Secrets")]
+     [SeqApp("AzureSecretCheck", Description = "Check Azure Application Registrations Secrets and Certificates expirations")]
      public class AzureSecretCheckInput : SeqApp, IPublishJson, IDisposable
      {
 
@@ -36,12 +36,7 @@ namespace SEQ.App.AzureSecretCheck
           {
 
           }
-/*
-          internal AzureSecretCheckInput(Settings settings)
-          {
 
-          }
-*/
           #endregion
           #region Plugin Inputs   
           /// <summary>
@@ -93,9 +88,9 @@ namespace SEQ.App.AzureSecretCheck
           /// 
           /// </summary>
           [SeqAppSetting(
-         DisplayName = "Interval (seconds)",
-         IsOptional = true,
-         HelpText = "The time between checks; the default is 3600 (once an hour).")]
+               DisplayName = "Interval (seconds)",
+               IsOptional = true,
+               HelpText = "The time between checks; the default is 3600 (once an hour).")]
           public int IntervalSeconds { get; set; } = 3600;
           /// <summary>
           /// 
@@ -111,12 +106,19 @@ namespace SEQ.App.AzureSecretCheck
           /// <param name="inputWriter"></param>
           public void Start(TextWriter inputWriter)
           {
-
+               //If the GraphScopes is null then put in an empty string to prevent issues with the split function.
+               if (GraphScopes == null){
+                    GraphScopes = string.Empty;
+               }
+               try{
                _settings = new Settings();
                _settings.ClientId = ClientId;
                _settings.TenantId = TenantId;
                _settings.ClientSecret = ClientSecret;
                _settings.GraphScopes = GraphScopes.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+               }catch(Exception ex){
+                   Console.WriteLine(ex.Message);//, "The Start Task threw an unhandled exception");
+               }
                // Connect to Graph.
                // https://learn.microsoft.com/en-us/graph/tutorials/dotnet?tabs=aad&tutorial-step=3
                // Microsoft.Graph.Settings settings = new Microsoft.Graph.Settings();
@@ -124,15 +126,16 @@ namespace SEQ.App.AzureSecretCheck
 
                var reporter = new AzureSecretCheckReporter(inputWriter);
                var appObjectIds = AppObjectIds.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-               foreach (var appObjectId in appObjectIds )   { 
-                    var healthCheck = new AzureSecretValidityCheck(App.Title,appObjectId,ValidityDays,_settings);
+               foreach (var appObjectId in appObjectIds)
+               {
+                    var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId, ValidityDays, _settings);
                     _azureSecretCheckTasks.Add(new AzureSecretCheckTask(healthCheck,
                          appObjectId,
                          TimeSpan.FromSeconds(IntervalSeconds),
                          reporter,
                          Log
                     ));
-                    
+
                }
 
           }

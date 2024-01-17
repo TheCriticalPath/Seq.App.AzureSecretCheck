@@ -40,7 +40,7 @@ namespace SEQ.App.AzureSecretCheck
 
         [JsonProperty("@mt")]
         public string MessageTemplate { get; } =
-            "App {ApplicationAppDisplayName} ({ApApplicationAppId}) {Outcome}, expires in {ExpirationDays} days";
+            "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}, expires in {ExpirationDays} days";
         [JsonProperty("@l", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Level { get; }
         #endregion
