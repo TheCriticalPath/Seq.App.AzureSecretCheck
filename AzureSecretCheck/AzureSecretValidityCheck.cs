@@ -24,7 +24,7 @@ namespace SEQ.App.AzureSecretCheck
             _settings = settings;
 
         }
-        
+
         public async Task<AzureSecretCheckResult> CheckNow(CancellationToken cancel, ILogger diagnosticLog)
         {
 
@@ -49,20 +49,26 @@ namespace SEQ.App.AzureSecretCheck
                 passwordExpiration = await azureApplication.GetPasswordExpiration();
                 azureSecretCheckResultKeys = await azureApplication.GetKeys();
                 azureSecretCheckResultPasswords = await azureApplication.GetPasswords();
-                if((!(keyExpiration.HasValue)  && azureApplication.HasValidKey) ||
-                   (keyExpiration.HasValue && keyExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidKey)){
+                if ((!(keyExpiration.HasValue) && azureApplication.HasValidKey) ||
+                   (keyExpiration.HasValue && keyExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidKey))
+                {
                     keyIsValid = true;
-                }else{
+                }
+                else
+                {
                     keyIsValid = false;
                 }
-                if((!(passwordExpiration.HasValue)  && azureApplication.HasValidPassword) ||
-                   (passwordExpiration.HasValue && passwordExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidPassword)){
+                if ((!(passwordExpiration.HasValue) && azureApplication.HasValidPassword) ||
+                   (passwordExpiration.HasValue && passwordExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidPassword))
+                {
                     keyIsValid = true;
-                }else{
+                }
+                else
+                {
                     keyIsValid = false;
                 }
-                bool valid = keyIsValid && passwordIsValid; 
-                
+                bool valid = keyIsValid && passwordIsValid;
+
                 outcome = valid ? OutcomeSucceeded : OutcomeFailed;
             }
             catch (Exception exception)
@@ -73,21 +79,21 @@ namespace SEQ.App.AzureSecretCheck
 
             var level = outcome == OutcomeFailed ? "Error" : null;
 
-               return new AzureSecretCheckResult(utcTimestamp
-                                    , azureApplication.AppId
-                                    , azureApplication.AppObjectId
-                                    , azureApplication.DisplayName
-                                    , azureApplication.Description
-                                    , azureApplication.DisabledByMicrosoftStatus
-                                    , azureApplication.Tags
-                                    , azureApplication.CreatedDateTime
-                                    , keyExpiration
-                                    , passwordExpiration
-                                    , azureSecretCheckResultKeys
-                                    , azureSecretCheckResultPasswords
-                                    , outcome
-                                    , level
-                                    );
+            return new AzureSecretCheckResult(utcTimestamp
+                                 , azureApplication.AppId
+                                 , azureApplication.AppObjectId
+                                 , azureApplication.DisplayName
+                                 , azureApplication.Description
+                                 , azureApplication.DisabledByMicrosoftStatus
+                                 , azureApplication.Tags
+                                 , azureApplication.CreatedDateTime
+                                 , keyExpiration
+                                 , passwordExpiration
+                                 , azureSecretCheckResultKeys
+                                 , azureSecretCheckResultPasswords
+                                 , outcome
+                                 , level
+                                 );
 
 
         }

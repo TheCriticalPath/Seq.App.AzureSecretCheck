@@ -56,6 +56,22 @@ namespace SEQ.App.AzureSecretCheck
             }
 
         }
+
+        public async Task<List<AzureSecretCheckResultPassword>> GetPasswords(){
+            List<AzureSecretCheckResultPassword> retVal = new List<AzureSecretCheckResultPassword>();
+            foreach(var cred in PasswordCredentials){
+                retVal.Add(new AzureSecretCheckResultPassword(cred.DisplayName, cred.StartDateTime, cred.EndDateTime, cred.Hint, cred.KeyId.ToString()));
+            }
+            return retVal;
+        }
+        public async Task<List<AzureSecretCheckResultKey>> GetKeys(){
+            List<AzureSecretCheckResultKey> retVal = new List<AzureSecretCheckResultKey>();
+            foreach(var cred in KeyCredentials){
+                retVal.Add(new AzureSecretCheckResultKey(cred.DisplayName, cred.StartDateTime, cred.EndDateTime));
+            }
+            return retVal;
+        }
+
         public async Task<DateTimeOffset?> GetKeyExpiration()
         {
             DateTimeOffset? maxDate = DateTimeOffset.MinValue;
@@ -70,38 +86,8 @@ namespace SEQ.App.AzureSecretCheck
                     maxDate = retVal;
                 }
             }
-            return retVal;
+            return maxDate;
         }
-
-/*
-
-        public string DisplayName {get;}
-        public DateTime? StartDateTime{get;}
-        public DateTime? EndDateTime{get;}
-    }
-    public class AzureSecretCheckResultPassword{
-        public string DisplayName {get;}
-        public DateTime? StartDateTime{get;}
-        public DateTime? EndDateTime{get;}
-        public string Hint{get;}
-        public string KeyId{get;}
-    }
-    */
-        public async Task<List<AzureSecretCheckResultPassword>> GetPasswords(){
-            List<AzureSecretCheckResultPassword> retVal = new List<AzureSecretCheckResultPassword>();
-            foreach(var cred in PasswordCredentials){
-                retVal.Add(new AzureSecretCheckResultPassword(cred.DisplayName, cred.StartDateTime, cred.EndDateTime, cred.Hint, cred.KeyId.ToString()));
-            }
-            return retVal;
-        }
-        public async Task<List<AzureSecretCheckResultKey>> GetKeys(){
-            List<AzureSecretCheckResultKey> retVal = new List<AzureSecretCheckResultKey>();
-            foreach(var cred in PasswordCredentials){
-                retVal.Add(new AzureSecretCheckResultKey(cred.DisplayName, cred.StartDateTime, cred.EndDateTime));
-            }
-            return retVal;
-        }
-
         public async Task<DateTimeOffset?> GetPasswordExpiration()
         {
             DateTimeOffset? maxDate = DateTimeOffset.MinValue;
@@ -117,7 +103,7 @@ namespace SEQ.App.AzureSecretCheck
                     maxDate = retVal;
                 }
             }
-            return retVal;
+            return maxDate;
         }
 
         public bool HasValidPassword
