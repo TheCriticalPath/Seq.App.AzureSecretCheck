@@ -79,7 +79,8 @@ async Task RunSimulatedHost(TestHost testHost, IConfigurationRoot configuration,
             ClientSecret = configuration["AzureClientSecret"],
             GraphScopes = configuration["GraphScopes"],
             IntervalSeconds = 5
-        };
+        }; 
+        
 
         runner.Attach(testHost);
         runner.Start(writer);
