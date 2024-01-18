@@ -1,32 +1,28 @@
 ﻿using SEQ.App.AzureSecretCheck;
 using Seq.Apps;
 using Serilog;
-using Serilog.Core;
-using Microsoft.Graph;
 using Serilog.Events;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Pipes;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Serilog.Formatting.Compact.Reader;
+using Microsoft.Extensions.Configuration;
+
 // See https://aka.ms/new-console-template for more information
 // https://github.com/janpieterz/seq-input-certificatecheck/blob/main/Terminal/Program.cs
-if (args.Length == 0)
-{
-    args = new string[] { "7aa42cfc-a799-488b-bd50-c9e77647f02e" };// "2dcdcb0c-49c7-4873-864d-25b5e3b6d1e7", "c40ca8c6-ceaa-4aca-a05e-2e7c85588470", "9c250dd4-3b2f-477b-b91b-bc0b027242f0" };
-
-}
-Logger generalLog = new Serilog.LoggerConfiguration().WriteTo.Console(outputTemplate: "[MAIN][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Properties}{NewLine}{Exception}").CreateLogger();
-Logger selfLog = new Serilog.LoggerConfiguration().WriteTo.Console(outputTemplate: "[\x1b[43;34mSELF\x1b[0m][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Properties}{NewLine}{Exception}").CreateLogger();
+var config = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json")
+    .AddUserSecrets<Program>()
+    .Build();
+config.Reload();
+Serilog.Core.Logger generalLog = new Serilog.LoggerConfiguration().WriteTo.Console(outputTemplate: "[MAIN][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Properties}{NewLine}{Exception}").CreateLogger();
+Serilog.Core.Logger selfLog = new Serilog.LoggerConfiguration().WriteTo.Console(outputTemplate: "[\x1b[43;34mSELF\x1b[0m][{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Properties}{NewLine}{Exception}").CreateLogger();
 TestHost testHost = new TestHost { App = new App("1", "test", new Dictionary<string, string>() { }, ""), Logger = selfLog };
 
 AnonymousPipeServerStream hostPipe = new AnonymousPipeServerStream(PipeDirection.In);
 CancellationTokenSource cts = new CancellationTokenSource();
 StreamReader streamLogReader = new StreamReader(hostPipe);
-Task hostTask = RunSimulatedHost(testHost, args, hostPipe.GetClientHandleAsString(), cts.Token);
+Task hostTask = RunSimulatedHost(testHost, config, hostPipe.GetClientHandleAsString(), cts.Token);
 
 #pragma warning disable CS8621 // Nullability of reference types in return type doesn't match the target delegate (possibly because of nullability attributes).
 Task<string> exitTask = Task.Run<string>(Console.In.ReadLine);
@@ -66,18 +62,22 @@ while (!cts.IsCancellationRequested)
 await Task.WhenAll(hostTask);
 
 
-async Task RunSimulatedHost(TestHost testHost, string[] appObjectIds, string pipeHandle, CancellationToken cancellationToken)
+async Task RunSimulatedHost(TestHost testHost, IConfigurationRoot configuration, string pipeHandle, CancellationToken cancellationToken)
 {
     AnonymousPipeClientStream clientPipe = new AnonymousPipeClientStream(PipeDirection.Out, pipeHandle);
     using (StreamWriter writer = new StreamWriter(clientPipe))
     {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        var appObjectIds = configuration["AzureAppObjectIds"].Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
         AzureSecretCheckInput runner = new AzureSecretCheckInput
         {
             AppObjectIds = string.Join(Environment.NewLine, appObjectIds),
-            ClientId = "",
-            TenantId = "",
-            ClientSecret = "",
-            GraphScopes = "",
+            ClientId = configuration["AzureClientId"],
+            TenantId = configuration["AzureTenantId"],
+            ClientSecret = configuration["AzureClientSecret"],
+            GraphScopes = configuration["GraphScopes"],
             IntervalSeconds = 5
         };
 
