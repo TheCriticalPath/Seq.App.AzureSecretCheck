@@ -6,12 +6,15 @@ using System.IO.Pipes;
 using Newtonsoft.Json.Linq;
 using Serilog.Formatting.Compact.Reader;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using Microsoft.Extensions.Options;
 
 // See https://aka.ms/new-console-template for more information
 // https://github.com/janpieterz/seq-input-certificatecheck/blob/main/Terminal/Program.cs
 var config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    //.AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>()
     .Build();
 config.Reload();
