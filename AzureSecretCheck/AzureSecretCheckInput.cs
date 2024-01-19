@@ -69,7 +69,7 @@ namespace SEQ.App.AzureSecretCheck
           /// <summary>
           /// 
           /// </summary>
-          [SeqAppSetting(DisplayName = "GraphScopes",
+          [SeqAppSetting(DisplayName = "Graph Scopes",
                Syntax = "code",
                InputType = SettingInputType.LongText,
                IsOptional = true,
