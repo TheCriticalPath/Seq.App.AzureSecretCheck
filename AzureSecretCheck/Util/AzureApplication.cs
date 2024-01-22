@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
     public class AzureApplication
     {
@@ -86,7 +86,7 @@ namespace SEQ.App.AzureSecretCheck
                     maxDate = retVal;
                 }
             }
-            return maxDate;
+            return retVal;
         }
         public async Task<DateTimeOffset?> GetPasswordExpiration()
         {
@@ -103,7 +103,7 @@ namespace SEQ.App.AzureSecretCheck
                     maxDate = retVal;
                 }
             }
-            return maxDate;
+            return retVal;
         }
 
         public bool HasValidPassword

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Seq.Apps;
 
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
     internal class AzureSecretCheckTask : IDisposable
     {

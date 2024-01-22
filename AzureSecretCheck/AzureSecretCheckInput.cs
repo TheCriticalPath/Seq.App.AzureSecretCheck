@@ -11,7 +11,7 @@ using System.Net.Http;
 using Seq.Apps;
 
 
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
 
      [SeqApp("AzureSecretCheck", Description = "Check Azure Application Registrations Secrets and Certificates expirations")]

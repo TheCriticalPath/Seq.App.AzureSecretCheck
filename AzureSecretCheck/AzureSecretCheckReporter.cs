@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
     class AzureSecretCheckReporter
     {

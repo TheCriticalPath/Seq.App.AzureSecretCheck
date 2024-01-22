@@ -1,4 +1,4 @@
-﻿using SEQ.App.AzureSecretCheck;
+﻿using Seq.App.AzureSecretCheck;
 using Seq.Apps;
 using Serilog;
 using Serilog.Events;

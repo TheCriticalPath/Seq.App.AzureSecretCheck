@@ -1,6 +1,6 @@
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
     public static class GraphExtensions
     {

@@ -1,4 +1,4 @@
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
     public class Settings
     {

@@ -1,5 +1,7 @@
-![alt text](./Assets/AzureSecretCheckLogo.png "Title")
 # Seq.App.AzureSecretCheck
+
+![alt text](./Assets/AzureSecretCheckLogo.png "Title")
+
 Azure App Registration Secret Expiration Check.
 
 ## Description

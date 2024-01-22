@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Seq.Apps;
 
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 
 {
     public class AzureSecretValidityCheck
@@ -61,11 +61,11 @@ namespace SEQ.App.AzureSecretCheck
                 if ((!(passwordExpiration.HasValue) && azureApplication.HasValidPassword) ||
                    (passwordExpiration.HasValue && passwordExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidPassword))
                 {
-                    keyIsValid = true;
+                    passwordIsValid = true;
                 }
                 else
                 {
-                    keyIsValid = false;
+                    passwordIsValid = false;
                 }
                 bool valid = keyIsValid && passwordIsValid;
 
@@ -93,6 +93,8 @@ namespace SEQ.App.AzureSecretCheck
                                  , azureSecretCheckResultPasswords
                                  , outcome
                                  , level
+                                 , keyIsValid
+                                 , passwordIsValid
                                  );
 
 

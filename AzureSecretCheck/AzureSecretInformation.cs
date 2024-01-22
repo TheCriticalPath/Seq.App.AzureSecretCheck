@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-namespace SEQ.App.AzureSecretCheck
-
+namespace Seq.App.AzureSecretCheck
 {
     public class CertificateInformation
     {

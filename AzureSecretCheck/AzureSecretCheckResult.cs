@@ -2,18 +2,20 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SEQ.App.AzureSecretCheck
+namespace Seq.App.AzureSecretCheck
 {
     public class AzureSecretCheckResultKey
     {
         public string DisplayName { get; }
         public DateTimeOffset? StartDateTime { get; }
         public DateTimeOffset? EndDateTime { get; }
+        public int ExpirationDays { get; }
         public AzureSecretCheckResultKey(string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime)
         {
             DisplayName = displayName;
             StartDateTime = startDateTime;
             EndDateTime = endDateTime;
+            ExpirationDays = EndDateTime.HasValue ? Convert.ToInt32(Math.Floor((EndDateTime.Value - DateTime.UtcNow).TotalDays)) : 9999;
         }
     }
     public class AzureSecretCheckResultPassword
@@ -23,6 +25,7 @@ namespace SEQ.App.AzureSecretCheck
         public DateTimeOffset? EndDateTime { get; }
         public string Hint { get; }
         public string KeyId { get; }
+        public int ExpirationDays { get; }
         public AzureSecretCheckResultPassword(string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime, string hint, string keyId)
         {
             DisplayName = displayName;
@@ -30,6 +33,8 @@ namespace SEQ.App.AzureSecretCheck
             EndDateTime = endDateTime;
             Hint = hint;
             KeyId = keyId;
+            ExpirationDays = EndDateTime.HasValue ? Convert.ToInt32(Math.Floor((EndDateTime.Value - DateTime.UtcNow).TotalDays)) : 9999;
+
         }
     }
     public class AzureSecretCheckResult
@@ -39,21 +44,22 @@ namespace SEQ.App.AzureSecretCheck
         public DateTime UtcTimestamp { get; }
 
         [JsonProperty("@mt")]
-        public string MessageTemplate { get; } =
-            "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}, expires in {ExpirationDays} days";
+        public string MessageTemplate { get; } = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}, Certificate expires in {KeyExpirationDays} days, Secret Expires in {PasswordExpirationDays}";
         [JsonProperty("@l", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Level { get; }
         #endregion
         #region Certificate Properties
-        public DateTime? Expiration { get; set; }
+
         //public int ExpirationDays => Expiration.HasValue ? Convert.ToInt32(Math.Floor((Expiration.Value - DateTime.UtcNow).TotalDays)) : -1;
-        public string Issuer { get; }
-        public string Subject { get; }
-        public string Thumbprint { get; }
-        public string SerialNumber { get; set; }
-        public IEnumerable<string> SubjectAlternativeNames { get; set; }
-        public string CertificateCheckTitle { get; }
-        public string TargetUrl { get; }
+        /*         
+                public string Issuer { get; }
+                public string Subject { get; }
+                public string Thumbprint { get; }
+                public string SerialNumber { get; set; }
+                public IEnumerable<string> SubjectAlternativeNames { get; set; }
+                public string CertificateCheckTitle { get; }
+                public string TargetUrl { get; } 
+        */
 
         #endregion
         #region Azure Application Properties
@@ -66,12 +72,12 @@ namespace SEQ.App.AzureSecretCheck
         public DateTimeOffset? CreatedDateTime { get; }
         public DateTimeOffset? KeyExpiration { get; }
         public DateTimeOffset? PasswordExpiration { get; }
-        public int KeyExpirationDays => KeyExpiration.HasValue ? Convert.ToInt32(Math.Floor((KeyExpiration.Value - DateTime.UtcNow).TotalDays)) : -9999;
-        public int PasswordExpirationDays => PasswordExpiration.HasValue ? Convert.ToInt32(Math.Floor((PasswordExpiration.Value - DateTime.UtcNow).TotalDays)) : -9999;
-        public int ExpirationDays => Math.Abs(KeyExpirationDays) > Math.Abs(PasswordExpirationDays) ? PasswordExpirationDays : KeyExpirationDays;
+        public int? KeyExpirationDays => KeyExpiration.HasValue ? Convert.ToInt32(Math.Floor((KeyExpiration.Value - DateTime.UtcNow).TotalDays)) : null;
+        public int? PasswordExpirationDays => PasswordExpiration.HasValue ? Convert.ToInt32(Math.Floor((PasswordExpiration.Value - DateTime.UtcNow).TotalDays)) : null;
         public List<AzureSecretCheckResultKey> AzureSecretCheckResultKeys { get; }
         public List<AzureSecretCheckResultPassword> AzureSecretCheckResultPasswords { get; }
-
+        public bool PasswordIsValid { get; }
+        public bool KeyIsValid { get; }
         #endregion
 
         public string Outcome { get; }
@@ -89,7 +95,9 @@ namespace SEQ.App.AzureSecretCheck
                                     , List<AzureSecretCheckResultKey> azureSecretCheckResultKeys
                                     , List<AzureSecretCheckResultPassword> azureSecretCheckResultPassword
                                     , string outcome
-                                    , string level)
+                                    , string level
+                                    , bool keyIsValid
+                                    , bool passwordIsValid)
         {
             if (utcTimestamp.Kind != DateTimeKind.Utc)
             {
@@ -107,8 +115,22 @@ namespace SEQ.App.AzureSecretCheck
             CreatedDateTime = createdDateTime;
             KeyExpiration = keyExpiration;
             PasswordExpiration = passwordExpiration;
+            PasswordIsValid = passwordIsValid;
+            KeyIsValid = keyIsValid;
             AzureSecretCheckResultKeys = azureSecretCheckResultKeys;
             AzureSecretCheckResultPasswords = azureSecretCheckResultPassword;
+            if (keyIsValid && passwordIsValid && azureSecretCheckResultKeys.Count > 0 && azureSecretCheckResultPassword.Count > 0)
+            {
+                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Certificate expires in {KeyExpirationDays} days, Secret Expires in {PasswordExpirationDays}";
+            }
+            else if (keyIsValid && !passwordIsValid && azureSecretCheckResultPassword.Count > 0)
+            {
+                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Secret Expires in {PasswordExpirationDays}";
+            }
+            else if (!keyIsValid && passwordIsValid && azureSecretCheckResultKeys.Count > 0 )
+            {
+                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Certificate expires in {KeyExpirationDays} days";
+            }
         }
     }
 }
