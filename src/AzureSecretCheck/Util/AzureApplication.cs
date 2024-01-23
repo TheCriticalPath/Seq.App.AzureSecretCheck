@@ -78,12 +78,10 @@ namespace Seq.App.AzureSecretCheck
             DateTimeOffset? retVal = null;
             foreach (var cred in KeyCredentials)
             {
-                retVal = cred.EndDateTime;
-
-
-                if (retVal > maxDate)
+                if (cred.EndDateTime > maxDate)
                 {
-                    maxDate = retVal;
+                    maxDate = cred.EndDateTime;
+                    retVal = cred.EndDateTime;
                 }
             }
             return retVal;
@@ -96,11 +94,11 @@ namespace Seq.App.AzureSecretCheck
 
             foreach (var cred in PasswordCredentials)
             {
-                retVal = cred.EndDateTime;
 
-                if (retVal > maxDate)
+                if (cred.EndDateTime > maxDate)
                 {
-                    maxDate = retVal;
+                    maxDate = cred.EndDateTime;
+                    retVal = cred.EndDateTime;
                 }
             }
             return retVal;
