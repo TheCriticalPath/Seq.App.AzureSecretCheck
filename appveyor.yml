@@ -6,7 +6,7 @@ build_script:
   - pwsh: ./AzureSecretCheck/Build.ps1
 test: off
 artifacts:
-  - path: ./AzureSecretCheck/artifactsSeq.App.*.nupkg
+  - path: ./AzureSecretCheck/artifacts/Seq.App.*.nupkg
 deploy:
   - provider: NuGet
     api_key:
