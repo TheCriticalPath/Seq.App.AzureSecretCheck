@@ -1,6 +1,8 @@
 .vs
 AzureSecretCheck/bin
 AzureSecretCheck/obj
+./bin
+./obj
 Terminal/.vs
 Terminal/bin
 Terminal/obj
