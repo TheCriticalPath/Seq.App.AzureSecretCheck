@@ -1,0 +1,200 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/Terminal/Terminal.csproj": {}
+  },
+  "projects": {
+    "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/AzureSecretCheck.csproj": {
+      "version": "1.0.21",
+      "restore": {
+        "projectUniqueName": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/AzureSecretCheck.csproj",
+        "projectName": "Seq.App.AzureSecretCheck",
+        "projectPath": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/AzureSecretCheck.csproj",
+        "packagesPath": "/Users/tclark/.nuget/packages/",
+        "outputPath": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/NuGet.Config",
+          "/Users/tclark/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.10.4, )"
+            },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[5.38.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "Nullable": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.3.1, )"
+            },
+            "Seq.Apps": {
+              "target": "Package",
+              "version": "[2023.4.0, )"
+            },
+            "Seq.Syntax": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.15, 7.0.15]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.15, 7.0.15]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/Terminal/Terminal.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/Terminal/Terminal.csproj",
+        "projectName": "Terminal",
+        "projectPath": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/Terminal/Terminal.csproj",
+        "packagesPath": "/Users/tclark/.nuget/packages/",
+        "outputPath": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/Terminal/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/tclark/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/AzureSecretCheck.csproj": {
+                "projectPath": "/Users/tclark/Library/CloudStorage/OneDrive-Personal/source/repos/Seq.App.AzureSecretCheck/AzureSecretCheck/AzureSecretCheck.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.10.4, )"
+            },
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.UserSecrets": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[5.38.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "Serilog.Formatting.Compact.Reader": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Serilog.Sinks.Seq": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
