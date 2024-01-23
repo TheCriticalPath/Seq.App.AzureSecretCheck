@@ -8,10 +8,11 @@ if(Test-Path .\artifacts) {
 	echo "build: Cleaning .\artifacts"
 	Remove-Item .\artifacts -Force -Recurse
 }else{
-    ecno "build: artifacts folder not found."
+    echo "build: artifacts folder not found."
 
 }
 
+echo "running dotnet restore --no-cache"
 & dotnet restore --no-cache
 if($LASTEXITCODE -ne 0) { exit 1 }    
 
@@ -21,9 +22,9 @@ $suffix = @{ $true = ""; $false = "$($branch.Substring(0, [math]::Min(10,$branch
 
 echo "build: Version suffix is $suffix"
 
+echo "checking each folder/file in src"
 foreach ($src in ls src/*) {
     Push-Location $src
-
     echo "build: Packaging project in $src"
 
     if ($suffix) {
