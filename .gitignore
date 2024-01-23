@@ -1,12 +1,10 @@
 .vs
-AzureSecretCheck/bin
-AzureSecretCheck/obj
-./bin
-./obj
-Terminal/.vs
-Terminal/bin
-Terminal/obj
-AzureSecretCheck/.DS_Store
+src/AzureSecretCheck/bin
+src/AzureSecretCheck/obj
+test/Terminal/.vs
+test/Terminal/bin
+test/Terminal/obj
+src/AzureSecretCheck/.DS_Store
 .DS_Store
-AzureSecretCheck/artifacts/
+src/AzureSecretCheck/artifacts/
 
