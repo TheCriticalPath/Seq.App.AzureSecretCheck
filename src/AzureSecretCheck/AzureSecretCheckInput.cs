@@ -20,9 +20,8 @@ namespace Seq.App.AzureSecretCheck
 
           #region Class Properties
           /// <summary>
-          /// 
+          /// Settings object that holds the necessary secrets for accessing microsoft graph.
           /// </summary>
-          /// <returns></returns>
           private Settings _settings = null;
 
           /// <summary>
@@ -90,8 +89,8 @@ namespace Seq.App.AzureSecretCheck
           [SeqAppSetting(
                DisplayName = "Interval (seconds)",
                IsOptional = true,
-               HelpText = "The time between checks; the default is 3600 (once an hour).")]
-          public int IntervalSeconds { get; set; } = 3600;
+               HelpText = "The time between checks; the default is 86400 (once an day).")]
+          public int IntervalSeconds { get; set; } = 86400;
           /// <summary>
           /// 
           /// </summary>
