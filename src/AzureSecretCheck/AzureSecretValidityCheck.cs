@@ -28,7 +28,7 @@ namespace Seq.App.AzureSecretCheck
         public async Task<AzureSecretCheckResult> CheckNow(CancellationToken cancel, ILogger diagnosticLog)
         {
 
-            string outcome;
+            string outcome = string.Empty;
             var utcTimestamp = DateTime.UtcNow;
             AzureApplication azureApplication = null;
             AzureSecretCheckResult azureSecretCheckResult = null;
@@ -38,7 +38,6 @@ namespace Seq.App.AzureSecretCheck
             DateTimeOffset? passwordExpiration = null;
             List<AzureSecretCheckResultPassword> azureSecretCheckResultPasswords = null;
             List<AzureSecretCheckResultKey> azureSecretCheckResultKeys = null;
-            CertificateInformation certificateInformation = null;
             bool keyIsValid = true;
             bool passwordIsValid = true;
             try

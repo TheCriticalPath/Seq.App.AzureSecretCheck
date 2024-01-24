@@ -133,7 +133,7 @@ namespace Seq.App.AzureSecretCheck
             }
             else
             {
-                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Expiration is not in current threshold";
+                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Certificate expires in {KeyExpirationDays} days, Secret Expires in {PasswordExpirationDays}";
             }
         }
     }
