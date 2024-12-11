@@ -57,51 +57,29 @@ namespace Seq.App.AzureSecretCheck
 
         }
 
-        public async Task<List<AzureSecretCheckResultPassword>> GetPasswords(){
+       
+        public async Task<List<AzureSecretCheckResultPassword>> GetAllPasswords(){
             List<AzureSecretCheckResultPassword> retVal = new List<AzureSecretCheckResultPassword>();
             foreach(var cred in PasswordCredentials){
                 retVal.Add(new AzureSecretCheckResultPassword(cred.DisplayName, cred.StartDateTime, cred.EndDateTime, cred.Hint, cred.KeyId.ToString()));
             }
             return retVal;
         }
-        public async Task<List<AzureSecretCheckResultKey>> GetKeys(){
+        public async Task<List<AzureSecretCheckResultKey>> GetAllKeys(){
             List<AzureSecretCheckResultKey> retVal = new List<AzureSecretCheckResultKey>();
             foreach(var cred in KeyCredentials){
                 retVal.Add(new AzureSecretCheckResultKey(cred.DisplayName, cred.StartDateTime, cred.EndDateTime));
             }
             return retVal;
         }
-
-        public async Task<DateTimeOffset?> GetKeyExpiration()
+        
+        public async Task<DateTimeOffset?> GetKeyExpiration(int index)
         {
-            DateTimeOffset? maxDate = DateTimeOffset.MinValue;
-            DateTimeOffset? retVal = null;
-            foreach (var cred in KeyCredentials)
-            {
-                if (cred.EndDateTime > maxDate)
-                {
-                    maxDate = cred.EndDateTime;
-                    retVal = cred.EndDateTime;
-                }
-            }
-            return retVal;
+            return  KeyCredentials[index].EndDateTime;
         }
-        public async Task<DateTimeOffset?> GetPasswordExpiration()
+        public async Task<DateTimeOffset?> GetPasswordExpiration(int index)
         {
-            DateTimeOffset? maxDate = DateTimeOffset.MinValue;
-            DateTimeOffset? retVal = null;
-            if(PasswordCredentials.Count > 0) retVal = DateTime.UtcNow;
-
-            foreach (var cred in PasswordCredentials)
-            {
-
-                if (cred.EndDateTime > maxDate)
-                {
-                    maxDate = cred.EndDateTime;
-                    retVal = cred.EndDateTime;
-                }
-            }
-            return retVal;
+            return PasswordCredentials[index].EndDateTime;
         }
 
         public bool HasValidPassword

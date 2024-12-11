@@ -17,7 +17,6 @@ namespace Seq.App.AzureSecretCheck
         const string OutcomeSucceeded = "succeeded", OutcomeFailed = "failed";
         public AzureSecretValidityCheck(string title, string appObjectId, int validityDays, Settings settings)
         {
-
             _title = title ?? throw new ArgumentNullException(nameof(title));
             _appObjectId = appObjectId ?? throw new ArgumentNullException(nameof(appObjectId));
             _validityDays = validityDays;
@@ -25,60 +24,40 @@ namespace Seq.App.AzureSecretCheck
 
         }
 
-        public async Task<AzureSecretCheckResult> CheckNow(CancellationToken cancel, ILogger diagnosticLog)
+        public async Task<List<AzureSecretCheckResult>> CheckNow(CancellationToken cancel, ILogger diagnosticLog)
         {
+            List<AzureSecretCheckResult> results = new List<AzureSecretCheckResult>();
 
             string outcome = string.Empty;
             var utcTimestamp = DateTime.UtcNow;
             AzureApplication azureApplication = null;
             AzureSecretCheckResult azureSecretCheckResult = null;
+            DateTimeOffset? expirationDate = null;
             AzureSecretCheckResultKey azureSecretCheckKeyResult = null;
-            AzureSecretCheckResultPassword azureSecretCheckPasswordResult = null;
-            DateTimeOffset? keyExpiration = null;
-            DateTimeOffset? passwordExpiration = null;
-            List<AzureSecretCheckResultPassword> azureSecretCheckResultPasswords = null;
-            List<AzureSecretCheckResultKey> azureSecretCheckResultKeys = null;
             bool keyIsValid = true;
             bool passwordIsValid = true;
             try
             {
                 GraphHelper.InitializeGraphForUserAuth(_settings);
                 azureApplication = await GraphHelper.GetAzureApplication(_appObjectId);
-                keyExpiration = await azureApplication.GetKeyExpiration();
-                passwordExpiration = await azureApplication.GetPasswordExpiration();
-                azureSecretCheckResultKeys = await azureApplication.GetKeys();
-                azureSecretCheckResultPasswords = await azureApplication.GetPasswords();
-                if ((!(keyExpiration.HasValue) && azureApplication.HasValidKey) ||
-                   (keyExpiration.HasValue && keyExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidKey))
-                {
-                    keyIsValid = true;
-                }
-                else
-                {
-                    keyIsValid = false;
-                }
-                if ((!(passwordExpiration.HasValue) && azureApplication.HasValidPassword) ||
-                   (passwordExpiration.HasValue && passwordExpiration > DateTime.UtcNow.AddDays(_validityDays) && azureApplication.HasValidPassword))
-                {
-                    passwordIsValid = true;
-                }
-                else
-                {
-                    passwordIsValid = false;
-                }
-                bool valid = keyIsValid && passwordIsValid;
+                var keys = await azureApplication.GetAllKeys();
 
-                outcome = valid ? OutcomeSucceeded : OutcomeFailed;
-            }
-            catch (Exception exception)
-            {
-                diagnosticLog.Error(exception, "Something went wrong while checking secrets for {AppObjectId}", _appObjectId);
-                outcome = OutcomeFailed;
-            }
+                // Handle Keys
+                int i = 0;
+                foreach (var key in keys)
+                {
+                    expirationDate = await azureApplication.GetKeyExpiration(i);
+                    if (expirationDate.HasValue && expirationDate < DateTime.UtcNow.AddDays(_validityDays))
+                    {
+                        outcome = OutcomeFailed;
+                    }
+                    else
+                    {
+                        outcome = OutcomeSucceeded;
+                    }
+                    var level = outcome == OutcomeFailed ? "Error" : null;
 
-            var level = outcome == OutcomeFailed ? "Error" : null;
-
-            return new AzureSecretCheckResult(utcTimestamp
+                    results.Add(new AzureSecretCheckResult(utcTimestamp
                                  , azureApplication.AppId
                                  , azureApplication.AppObjectId
                                  , azureApplication.DisplayName
@@ -86,16 +65,24 @@ namespace Seq.App.AzureSecretCheck
                                  , azureApplication.DisabledByMicrosoftStatus
                                  , azureApplication.Tags
                                  , azureApplication.CreatedDateTime
-                                 , keyExpiration
-                                 , passwordExpiration
-                                 , azureSecretCheckResultKeys
-                                 , azureSecretCheckResultPasswords
+                                 , expirationDate
+                                 , key.Description
                                  , outcome
                                  , level
-                                 , keyIsValid
-                                 , passwordIsValid
-                                 );
+                                 , "Certificate"
+                                 ));
+                    i++;
+                }
 
+            }
+            catch (Exception exception)
+            {
+                diagnosticLog.Error(exception, "Something went wrong while checking secrets for {AppObjectId}", _appObjectId);
+                outcome = OutcomeFailed;
+            }
+
+
+            return results;
 
         }
     }
