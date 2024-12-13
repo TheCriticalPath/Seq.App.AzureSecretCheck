@@ -48,7 +48,7 @@ namespace Seq.App.AzureSecretCheck
         public DateTime UtcTimestamp { get; }
 
         [JsonProperty("@mt")]
-        public string MessageTemplate { get; } = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays}";
+        public string MessageTemplate { get; } = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays} days";
         
         [JsonProperty("@l", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Level { get; }
@@ -95,7 +95,7 @@ namespace Seq.App.AzureSecretCheck
                                     , string outcome
                                     , string level
                                     , string objectType
-                                    //, bool objectIsValid
+                                    , bool objectIsValid
                                     )
         {
             if (utcTimestamp.Kind != DateTimeKind.Utc)
@@ -113,10 +113,11 @@ namespace Seq.App.AzureSecretCheck
             ApplicationTags = applicationTags;
             CreatedDateTime = createdDateTime;
             this.ExpirationDate = expirationDate;
-            //this.ObjectIsValid = objectIsValid;
+            this.ObjectIsValid = objectIsValid;
             this.ObjectType = objectType;
             this.Description = description;
             //MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays}";
+            //MessageTemplate = "App {"
         }
     }
 }

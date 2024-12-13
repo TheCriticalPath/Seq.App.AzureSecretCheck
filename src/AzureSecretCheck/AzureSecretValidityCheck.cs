@@ -34,14 +34,13 @@ namespace Seq.App.AzureSecretCheck
             AzureSecretCheckResult azureSecretCheckResult = null;
             DateTimeOffset? expirationDate = null;
             AzureSecretCheckResultKey azureSecretCheckKeyResult = null;
-            bool keyIsValid = true;
-            bool passwordIsValid = true;
+            bool objectIsValid = true;
             try
             {
                 GraphHelper.InitializeGraphForUserAuth(_settings);
                 azureApplication = await GraphHelper.GetAzureApplication(_appObjectId);
                 var keys = await azureApplication.GetAllKeys();
-
+                var passwords = await azureApplication.GetAllPasswords();
                 // Handle Keys
                 int i = 0;
                 foreach (var key in keys)
@@ -50,6 +49,7 @@ namespace Seq.App.AzureSecretCheck
                     if (expirationDate.HasValue && expirationDate < DateTime.UtcNow.AddDays(_validityDays))
                     {
                         outcome = OutcomeFailed;
+                        objectIsValid = false;
                     }
                     else
                     {
@@ -70,9 +70,42 @@ namespace Seq.App.AzureSecretCheck
                                  , outcome
                                  , level
                                  , "Certificate"
+                                 , objectIsValid
                                  ));
                     i++;
                 }
+                i = 0;
+                foreach (var pass in passwords)
+                {
+                    expirationDate = await azureApplication.GetPasswordExpiration(i);
+                    if (expirationDate.HasValue && expirationDate < DateTime.UtcNow.AddDays(_validityDays))
+                    {
+                        outcome = OutcomeFailed;
+                    }
+                    else
+                    {
+                        outcome = OutcomeSucceeded;
+                    }
+                    var level = outcome == OutcomeFailed ? "Error" : null;
+
+                    results.Add(new AzureSecretCheckResult(utcTimestamp
+                                 , azureApplication.AppId
+                                 , azureApplication.AppObjectId
+                                 , azureApplication.DisplayName
+                                 , azureApplication.Description
+                                 , azureApplication.DisabledByMicrosoftStatus
+                                 , azureApplication.Tags
+                                 , azureApplication.CreatedDateTime
+                                 , expirationDate
+                                 , pass.Description
+                                 , outcome
+                                 , level
+                                 , "Password"
+                                 , objectIsValid
+                                 ));
+                    i++;
+                }
+
 
             }
             catch (Exception exception)

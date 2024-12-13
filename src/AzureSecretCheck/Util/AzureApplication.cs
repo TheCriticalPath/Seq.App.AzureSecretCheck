@@ -61,14 +61,14 @@ namespace Seq.App.AzureSecretCheck
         public async Task<List<AzureSecretCheckResultPassword>> GetAllPasswords(){
             List<AzureSecretCheckResultPassword> retVal = new List<AzureSecretCheckResultPassword>();
             foreach(var cred in PasswordCredentials){
-                retVal.Add(new AzureSecretCheckResultPassword(cred.DisplayName, cred.StartDateTime, cred.EndDateTime, cred.Hint, cred.KeyId.ToString()));
+                retVal.Add(new AzureSecretCheckResultPassword(cred.DisplayName, cred.DisplayName, cred.StartDateTime, cred.EndDateTime, cred.Hint,  cred.KeyId.ToString()));
             }
             return retVal;
         }
         public async Task<List<AzureSecretCheckResultKey>> GetAllKeys(){
             List<AzureSecretCheckResultKey> retVal = new List<AzureSecretCheckResultKey>();
             foreach(var cred in KeyCredentials){
-                retVal.Add(new AzureSecretCheckResultKey(cred.DisplayName, cred.StartDateTime, cred.EndDateTime));
+                retVal.Add(new AzureSecretCheckResultKey(cred.DisplayName, cred.DisplayName, cred.StartDateTime, cred.EndDateTime));
             }
             return retVal;
         }
