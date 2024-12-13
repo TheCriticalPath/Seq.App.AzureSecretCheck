@@ -16,7 +16,7 @@ deploy:
       branch: /^(master|dev)$/
   - provider: GitHub
     auth_token:
-      secure: s58s6pu8sRbX0Z68CbdHk0Wt/qvkJVpoW0UqJ6KZXmO+D9NO7mQInItZWiEgKNgn
+      secure: 8+tt+poihs1fGyYzVOCvjEnuA5FRdK9M1XFkR5viPXAjYbYunUB+3/nI6ecA5eo1
     artifact: /Seq.App.*\.nupkg/
     tag: v$(appveyor_build_version)
     on:

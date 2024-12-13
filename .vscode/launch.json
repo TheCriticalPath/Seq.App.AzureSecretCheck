@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "coreclr",
+            "request": "launch",
+            "name": "Launch Test Terminal",
+            "program": "${workspaceFolder}/Test/Terminal/bin/Debug/net8.0/Terminal.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/test/Terminal",
+            "stopAtEntry": false,
+            "preLaunchTask": "Build All"
+        }
+    ]
+}
