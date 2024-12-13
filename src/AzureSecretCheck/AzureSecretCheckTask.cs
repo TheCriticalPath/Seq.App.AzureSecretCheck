@@ -33,8 +33,10 @@ namespace Seq.App.AzureSecretCheck
                 {
                     var sw = Stopwatch.StartNew();
 
-                    var result = await secretCheck.CheckNow(cancel, diagnosticLog).ConfigureAwait(false);
-                    reporter.Report(result);
+                    var results = await secretCheck.CheckNow(cancel, diagnosticLog).ConfigureAwait(false);
+                    foreach(var result in results){
+                        reporter.Report(result);
+                    }
                     sw.Stop();
                     var total = sw.Elapsed.TotalMilliseconds;
 

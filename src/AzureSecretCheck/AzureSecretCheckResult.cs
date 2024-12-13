@@ -10,8 +10,10 @@ namespace Seq.App.AzureSecretCheck
         public DateTimeOffset? StartDateTime { get; }
         public DateTimeOffset? EndDateTime { get; }
         public int ExpirationDays { get; }
-        public AzureSecretCheckResultKey(string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime)
+        public string Description {get;}
+        public AzureSecretCheckResultKey(string displayName, string description, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime)
         {
+            this.Description = description;
             DisplayName = displayName;
             StartDateTime = startDateTime;
             EndDateTime = endDateTime;
@@ -26,8 +28,10 @@ namespace Seq.App.AzureSecretCheck
         public string Hint { get; }
         public string KeyId { get; }
         public int ExpirationDays { get; }
-        public AzureSecretCheckResultPassword(string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime, string hint, string keyId)
+        public string Description {get;}
+        public AzureSecretCheckResultPassword(string description, string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime, string hint, string keyId)
         {
+            this.Description = description;
             DisplayName = displayName;
             StartDateTime = startDateTime;
             EndDateTime = endDateTime;
@@ -44,7 +48,8 @@ namespace Seq.App.AzureSecretCheck
         public DateTime UtcTimestamp { get; }
 
         [JsonProperty("@mt")]
-        public string MessageTemplate { get; } = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}, Certificate expires in {KeyExpirationDays} days, Secret Expires in {PasswordExpirationDays}";
+        public string MessageTemplate { get; } = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays} days";
+        
         [JsonProperty("@l", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Level { get; }
         #endregion
@@ -70,18 +75,13 @@ namespace Seq.App.AzureSecretCheck
         public string ApplicationDisabledByMicrosoftStatus { get; }
         public List<string> ApplicationTags { get; }
         public DateTimeOffset? CreatedDateTime { get; }
-        public DateTimeOffset? KeyExpiration { get; }
-        public DateTimeOffset? PasswordExpiration { get; }
-        public int? KeyExpirationDays => KeyExpiration.HasValue ? Convert.ToInt32(Math.Floor((KeyExpiration.Value - DateTime.UtcNow).TotalDays)) : null;
-        public int? PasswordExpirationDays => PasswordExpiration.HasValue ? Convert.ToInt32(Math.Floor((PasswordExpiration.Value - DateTime.UtcNow).TotalDays)) : null;
-        public List<AzureSecretCheckResultKey> AzureSecretCheckResultKeys { get; }
-        public List<AzureSecretCheckResultPassword> AzureSecretCheckResultPasswords { get; }
-        public bool PasswordIsValid { get; }
-        public bool KeyIsValid { get; }
+        public DateTimeOffset? ExpirationDate { get; }
+        public int? ExpirationDays => ExpirationDate.HasValue ? Convert.ToInt32(Math.Floor((ExpirationDate.Value - DateTime.UtcNow).TotalDays)) : null;
+        public string Description { get; }
+        public string ObjectType { get; }
+        public bool ObjectIsValid { get; }
         #endregion
-
         public string Outcome { get; }
-
         public AzureSecretCheckResult(DateTime utcTimestamp
                                     , string applicationAppId
                                     , string applicationAppObjectId
@@ -90,14 +90,13 @@ namespace Seq.App.AzureSecretCheck
                                     , string applicationDisabledByMicrosoftStatus
                                     , List<string> applicationTags
                                     , DateTimeOffset? createdDateTime
-                                    , DateTimeOffset? keyExpiration
-                                    , DateTimeOffset? passwordExpiration
-                                    , List<AzureSecretCheckResultKey> azureSecretCheckResultKeys
-                                    , List<AzureSecretCheckResultPassword> azureSecretCheckResultPassword
+                                    , DateTimeOffset? expirationDate
+                                    , string description
                                     , string outcome
                                     , string level
-                                    , bool keyIsValid
-                                    , bool passwordIsValid)
+                                    , string objectType
+                                    , bool objectIsValid
+                                    )
         {
             if (utcTimestamp.Kind != DateTimeKind.Utc)
             {
@@ -113,28 +112,12 @@ namespace Seq.App.AzureSecretCheck
             ApplicationDisabledByMicrosoftStatus = applicationDisabledByMicrosoftStatus;
             ApplicationTags = applicationTags;
             CreatedDateTime = createdDateTime;
-            KeyExpiration = keyExpiration;
-            PasswordExpiration = passwordExpiration;
-            PasswordIsValid = passwordIsValid;
-            KeyIsValid = keyIsValid;
-            AzureSecretCheckResultKeys = azureSecretCheckResultKeys;
-            AzureSecretCheckResultPasswords = azureSecretCheckResultPassword;
-            if (keyIsValid && passwordIsValid && azureSecretCheckResultKeys.Count > 0 && azureSecretCheckResultPassword.Count > 0)
-            {
-                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Certificate expires in {KeyExpirationDays} days, Secret Expires in {PasswordExpirationDays}";
-            }
-            else if (keyIsValid && !passwordIsValid && azureSecretCheckResultPassword.Count > 0)
-            {
-                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Secret Expires in {PasswordExpirationDays}";
-            }
-            else if (!keyIsValid && passwordIsValid && azureSecretCheckResultKeys.Count > 0)
-            {
-                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Certificate expires in {KeyExpirationDays} days";
-            }
-            else
-            {
-                MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: Certificate expires in {KeyExpirationDays} days, Secret Expires in {PasswordExpirationDays}";
-            }
+            this.ExpirationDate = expirationDate;
+            this.ObjectIsValid = objectIsValid;
+            this.ObjectType = objectType;
+            this.Description = description;
+            //MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays}";
+            //MessageTemplate = "App {"
         }
     }
 }
