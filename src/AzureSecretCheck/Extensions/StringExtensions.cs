@@ -14,8 +14,10 @@ namespace AzureSecretCheck.Extensions
         const string lineComments = @"//(.*?)\r?\n";
         const string strings = @"""((\\[^\n]|[^""\n])*)""";
         const string verbatimStrings = @"@(""[^""]*"")+";
-        public static string RemoveComments(this string input)
+        public static string RemoveComments(this string? input)
         {
+            if (string.IsNullOrEmpty(input)) return "";
+
             string retval = Regex.Replace(input,
             blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
             me =>
