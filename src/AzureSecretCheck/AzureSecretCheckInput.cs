@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using Seq.Apps;
+using AzureSecretCheck.Extensions;
 
 
 namespace Seq.App.AzureSecretCheck
@@ -128,7 +129,7 @@ namespace Seq.App.AzureSecretCheck
             //GraphHelper.InitializeGraphForUserAuth(_settings);
 
             var reporter = new AzureSecretCheckReporter(inputWriter);
-            var appObjectIds = AppObjectIds.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var appObjectIds = AppObjectIds.RemoveComments().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             GraphHelper.InitializeGraphForUserAuth(_settings);
 
             if (appObjectIds.Length < 1)
