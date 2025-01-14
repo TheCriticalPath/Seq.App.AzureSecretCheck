@@ -6,6 +6,7 @@ using Azure.Identity;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Me.SendMail;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Seq.App.AzureSecretCheck
 {
@@ -51,7 +52,28 @@ namespace Seq.App.AzureSecretCheck
         }
 
 
-       
+        public static async Task<List<string>> GetAppObjectIds()
+        {
+            bool hasNextPage = true;
+            List<string> appObjectIds = new List<string>();
+            var applications = await _userClient.Applications.GetAsync();
+
+            do
+            {
+                foreach (var application in applications.Value)
+                {
+                    appObjectIds.Add(application.Id);
+                }
+
+                hasNextPage = !(string.IsNullOrEmpty(applications.OdataNextLink));
+                if (hasNextPage) {
+                   applications = await _userClient.Applications.WithUrl(applications.OdataNextLink).GetAsync();
+                }
+            } while (hasNextPage);
+    
+            return appObjectIds;
+        }
+
     }
 }
 

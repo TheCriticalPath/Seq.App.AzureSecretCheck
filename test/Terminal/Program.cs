@@ -1,4 +1,5 @@
 ﻿using Seq.App.AzureSecretCheck;
+using AzureSecretCheck.Extensions;
 using Seq.Apps;
 using Serilog;
 using Serilog.Events;
@@ -8,6 +9,8 @@ using Serilog.Formatting.Compact.Reader;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
+
 
 // See https://aka.ms/new-console-template for more information
 // https://github.com/janpieterz/seq-input-certificatecheck/blob/main/Terminal/Program.cs
@@ -71,9 +74,9 @@ async Task RunSimulatedHost(TestHost testHost, IConfigurationRoot configuration,
     using (StreamWriter writer = new StreamWriter(clientPipe))
     {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        var appObjectIds = configuration["AzureAppObjectIds"].Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        var appObjectIds = configuration["AzureAppObjectIds"].RemoveComments().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-
+        appObjectIds = "".Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         AzureSecretCheckInput runner = new AzureSecretCheckInput
         {
             AppObjectIds = string.Join(Environment.NewLine, appObjectIds),

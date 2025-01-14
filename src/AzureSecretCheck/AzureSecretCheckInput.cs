@@ -9,95 +9,98 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using Seq.Apps;
+using AzureSecretCheck.Extensions;
+using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
 
 
 namespace Seq.App.AzureSecretCheck
 {
 
-     [SeqApp("AzureSecretCheck", Description = "Check Azure Application Registrations Secrets and Certificates expirations")]
-     public class AzureSecretCheckInput : SeqApp, IPublishJson, IDisposable
-     {
+    [SeqApp("AzureSecretCheck", Description = "Check Azure Application Registrations Secrets and Certificates expirations")]
+    public class AzureSecretCheckInput : SeqApp, IPublishJson, IDisposable
+    {
 
-          #region Class Properties
-          /// <summary>
-          /// Settings object that holds the necessary secrets for accessing microsoft graph.
-          /// </summary>
-          private Settings _settings = null;
+        #region Class Properties
+        /// <summary>
+        /// Settings object that holds the necessary secrets for accessing microsoft graph.
+        /// </summary>
+        private Settings _settings = null;
 
-          /// <summary>
-          /// List of Running Tasks to check Expiry
-          /// </summary>
-          private readonly List<AzureSecretCheckTask> _azureSecretCheckTasks = new List<AzureSecretCheckTask>();
-          //readonly AzureAppRegistrationSecretCheckClient _client;
-          #endregion
-          #region Constructors
-          public AzureSecretCheckInput()
-          {
+        /// <summary>
+        /// List of Running Tasks to check Expiry
+        /// </summary>
+        private readonly List<AzureSecretCheckTask> _azureSecretCheckTasks = new List<AzureSecretCheckTask>();
+        //readonly AzureAppRegistrationSecretCheckClient _client;
+        #endregion
+        #region Constructors
+        public AzureSecretCheckInput()
+        {
 
-          }
+        }
 
-          #endregion
-          #region Plugin Inputs   
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(DisplayName = "Azure Tenant Id",
-               Syntax = "code",
-               IsOptional = false,
-               InputType = SettingInputType.Password,
-               HelpText = "The Tenant ID of your Azure Instance")]
-          public string? TenantId { get; set; }
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(DisplayName = "Azure Client Id",
-               Syntax = "code",
-               IsOptional = false,
-               InputType = SettingInputType.Password,
-               HelpText = "The Client ID of this App Registration, that has the necessary access to query expiry.")]
-          public string? ClientId { get; set; }
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(DisplayName = "Client Secret ",
-               Syntax = "code",
-               IsOptional = false,
-               InputType = SettingInputType.Password,
-               HelpText = "The Client Secret for App Authentication.")]
-          public string? ClientSecret { get; set; }
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(DisplayName = "Graph Scopes",
-               Syntax = "code",
-               InputType = SettingInputType.LongText,
-               IsOptional = true,
-               HelpText = "Scopes for Graph API; enter one per line.")]
-          public string? GraphScopes { get; set; }
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(DisplayName = "Azure App Registration Object Ids",
-               Syntax = "code",
-               IsOptional = false,
-               InputType = SettingInputType.LongText,
-               HelpText = "The App Registrations to check; enter one per line.")]
-          public string? AppObjectIds { get; set; }
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(
-               DisplayName = "Interval (seconds)",
-               IsOptional = true,
-               HelpText = "The time between checks; the default is 86400 (once an day).")]
-          public int IntervalSeconds { get; set; } = 86400;
-          /// <summary>
-          /// 
-          /// </summary>
-          [SeqAppSetting(DisplayName = "Minimum validity period (days)", IsOptional = true,
-              HelpText = "The minimum amount of days a certificate should be valid; the default is 30")]
-          public int ValidityDays { get; set; } = 30;
-          #endregion
+        #endregion
+        #region Plugin Inputs   
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(DisplayName = "Azure Tenant Id",
+             Syntax = "code",
+             IsOptional = false,
+             InputType = SettingInputType.Password,
+             HelpText = "The Tenant ID of your Azure Instance")]
+        public string? TenantId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(DisplayName = "Azure Client Id",
+             Syntax = "code",
+             IsOptional = false,
+             InputType = SettingInputType.Password,
+             HelpText = "The Client ID of this App Registration, that has the necessary access to query expiry.")]
+        public string? ClientId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(DisplayName = "Client Secret ",
+             Syntax = "code",
+             IsOptional = false,
+             InputType = SettingInputType.Password,
+             HelpText = "The Client Secret for App Authentication.")]
+        public string? ClientSecret { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(DisplayName = "Graph Scopes",
+             Syntax = "code",
+             InputType = SettingInputType.LongText,
+             IsOptional = true,
+             HelpText = "Scopes for Graph API; enter one per line.")]
+        public string? GraphScopes { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(DisplayName = "Azure App Registration Object Ids",
+             Syntax = "code",
+             IsOptional = true,
+             InputType = SettingInputType.LongText,
+             HelpText = "The App Registrations to check; enter one per line or leave blank for all")]
+        public string? AppObjectIds { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(
+             DisplayName = "Interval (seconds)",
+             IsOptional = true,
+             HelpText = "The time between checks; the default is 86400 (once an day).")]
+        public int IntervalSeconds { get; set; } = 86400;
+        /// <summary>
+        /// 
+        /// </summary>
+        [SeqAppSetting(DisplayName = "Minimum validity period (days)", IsOptional = true,
+            HelpText = "The minimum amount of days a certificate should be valid; the default is 30")]
+        public int ValidityDays { get; set; } = 30;
+        #endregion
 
           /// <summary>
           /// 
@@ -118,43 +121,51 @@ namespace Seq.App.AzureSecretCheck
                }catch(Exception ex){
                    Console.WriteLine(ex.Message);//, "The Start Task threw an unhandled exception");
                }
-               // Connect to Graph.
-               // https://learn.microsoft.com/en-us/graph/tutorials/dotnet?tabs=aad&tutorial-step=3
-               // Microsoft.Graph.Settings settings = new Microsoft.Graph.Settings();
-               //GraphHelper.InitializeGraphForUserAuth(_settings);
+            // Connect to Graph.
+            // https://learn.microsoft.com/en-us/graph/tutorials/dotnet?tabs=aad&tutorial-step=3
+            // Microsoft.Graph.Settings settings = new Microsoft.Graph.Settings();
+            // GraphHelper.InitializeGraphForUserAuth(_settings);
+  
+            var reporter = new AzureSecretCheckReporter(inputWriter);
+               var appObjectIds = AppObjectIds.RemoveComments()
+                                              .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            GraphHelper.InitializeGraphForUserAuth(_settings);
 
-               var reporter = new AzureSecretCheckReporter(inputWriter);
-               var appObjectIds = AppObjectIds.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-               foreach (var appObjectId in appObjectIds)
+            if (appObjectIds.Length < 1)
+            {
+                appObjectIds = GraphHelper.GetAppObjectIds().Result.ToArray();
+            }
+            foreach (var appObjectId in appObjectIds)
                {
-                    var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId, ValidityDays, _settings);
+     
+                    var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId.Trim(), ValidityDays, _settings);
                     _azureSecretCheckTasks.Add(new AzureSecretCheckTask(healthCheck,
-                         appObjectId,
+                         appObjectId.Trim(),
                          TimeSpan.FromSeconds(IntervalSeconds),
                          reporter,
                          Log
                     ));
 
-               }
+            }
 
-          }
+        }
 
-          public void Stop()
-          {
-               foreach (var task in _azureSecretCheckTasks)
-               {
-                    task.Stop();
-               }
-          }
+        public void Stop()
+        {
+            foreach (var task in _azureSecretCheckTasks)
+            {
+                task.Stop();
+            }
+        }
 
-          public void Dispose()
-          {
-               foreach (var task in _azureSecretCheckTasks)
-               {
-                    task.Dispose();
-               }
-          }
+        public void Dispose()
+        {
+            foreach (var task in _azureSecretCheckTasks)
+            {
+                task.Dispose();
+            }
+        }
 
 
-     }
+    }
 }
