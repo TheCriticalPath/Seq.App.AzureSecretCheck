@@ -139,9 +139,9 @@ namespace Seq.App.AzureSecretCheck
 
             foreach (var appObjectId in appObjectIds)
             {
-                var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId, ValidityDays, _settings);
+                var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId.Trim(), ValidityDays, _settings);
                 _azureSecretCheckTasks.Add(new AzureSecretCheckTask(healthCheck,
-                     appObjectId,
+                     appObjectId.Trim(),
                      TimeSpan.FromSeconds(IntervalSeconds),
                      reporter,
                      Log
