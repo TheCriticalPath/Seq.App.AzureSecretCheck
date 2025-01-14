@@ -73,7 +73,7 @@ async Task RunSimulatedHost(TestHost testHost, IConfigurationRoot configuration,
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         var appObjectIds = configuration["AzureAppObjectIds"].Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-
+        appObjectIds = "".Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         AzureSecretCheckInput runner = new AzureSecretCheckInput
         {
             AppObjectIds = string.Join(Environment.NewLine, appObjectIds),
