@@ -27,6 +27,7 @@ This plug-in requires an app registration with a client secret that has `Applica
 ## Change Log
 ### 2.1.1 - 2025/01/14
 - Application Object Ids are now optional.  If the Application Object Ids are empty, all object Ids will be reviewed.
+- Line Comments (//) and Block Comments (/* */) are allowed in the Application Object Ids.
 
 ## Authors
 - Tony Clark [@TheCriticalPath](https://github.com/TheCriticalPath)
