@@ -10,13 +10,13 @@ artifacts:
 deploy:
   - provider: NuGet
     api_key:
-      secure: oy2fzsns3udc2tr7p45qykcmwo376aneje5yzximv6kb7a
+      secure: Jvu7618IrexLiFgnroZWo/Lv+So7soGTyONsSKnRCT0OIxpKbDaD3vAKIfIbd7Gj
     skip_symbols: true
     on:
       branch: /^(master|dev)$/
   - provider: GitHub
     auth_token:
-      secure: 8+tt+poihs1fGyYzVOCvjEnuA5FRdK9M1XFkR5viPXAjYbYunUB+3/nI6ecA5eo1
+      secure: DcyKlAUSqqdeF5rpWUSf0t3DLSbXr56jrmitc4l680pZzL5EGiJF+qKTkxIcs7lK
     artifact: /Seq.App.*\.nupkg/
     tag: v$(appveyor_build_version)
     on:
