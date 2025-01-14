@@ -9,9 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using Seq.Apps;
-using AzureSecretCheck.Extensions;
-using System.Text.RegularExpressions;
-using Microsoft.VisualBasic;
 
 
 namespace Seq.App.AzureSecretCheck
@@ -84,7 +81,7 @@ namespace Seq.App.AzureSecretCheck
              Syntax = "code",
              IsOptional = true,
              InputType = SettingInputType.LongText,
-             HelpText = "The App Registrations to check; enter one per line or leave blank for all")]
+             HelpText = "The App Registrations to check; enter one per line or leave blank for all. // and /* */ comments allowed" )]
         public string? AppObjectIds { get; set; }
         /// <summary>
         /// 
@@ -102,49 +99,52 @@ namespace Seq.App.AzureSecretCheck
         public int ValidityDays { get; set; } = 30;
         #endregion
 
-          /// <summary>
-          /// 
-          /// </summary>
-          /// <param name="inputWriter"></param>
-          public void Start(TextWriter inputWriter)
-          {
-               //If the GraphScopes is null then put in an empty string to prevent issues with the split function.
-               if (GraphScopes == null){
-                    GraphScopes = string.Empty;
-               }
-               try{
-               _settings = new Settings();
-               _settings.ClientId = ClientId;
-               _settings.TenantId = TenantId;
-               _settings.ClientSecret = ClientSecret;
-               _settings.GraphScopes = GraphScopes.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-               }catch(Exception ex){
-                   Console.WriteLine(ex.Message);//, "The Start Task threw an unhandled exception");
-               }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputWriter"></param>
+        public void Start(TextWriter inputWriter)
+        {
+            //If the GraphScopes is null then put in an empty string to prevent issues with the split function.
+            if (GraphScopes == null)
+            {
+                GraphScopes = string.Empty;
+            }
+            try
+            {
+                _settings = new Settings();
+                _settings.ClientId = ClientId;
+                _settings.TenantId = TenantId;
+                _settings.ClientSecret = ClientSecret;
+                _settings.GraphScopes = GraphScopes.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);//, "The Start Task threw an unhandled exception");
+            }
             // Connect to Graph.
             // https://learn.microsoft.com/en-us/graph/tutorials/dotnet?tabs=aad&tutorial-step=3
             // Microsoft.Graph.Settings settings = new Microsoft.Graph.Settings();
-            // GraphHelper.InitializeGraphForUserAuth(_settings);
-  
+            //GraphHelper.InitializeGraphForUserAuth(_settings);
+
             var reporter = new AzureSecretCheckReporter(inputWriter);
-               var appObjectIds = AppObjectIds.RemoveComments()
-                                              .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var appObjectIds = AppObjectIds.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             GraphHelper.InitializeGraphForUserAuth(_settings);
 
             if (appObjectIds.Length < 1)
             {
                 appObjectIds = GraphHelper.GetAppObjectIds().Result.ToArray();
             }
+
             foreach (var appObjectId in appObjectIds)
-               {
-     
-                    var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId.Trim(), ValidityDays, _settings);
-                    _azureSecretCheckTasks.Add(new AzureSecretCheckTask(healthCheck,
-                         appObjectId.Trim(),
-                         TimeSpan.FromSeconds(IntervalSeconds),
-                         reporter,
-                         Log
-                    ));
+            {
+                var healthCheck = new AzureSecretValidityCheck(App.Title, appObjectId, ValidityDays, _settings);
+                _azureSecretCheckTasks.Add(new AzureSecretCheckTask(healthCheck,
+                     appObjectId,
+                     TimeSpan.FromSeconds(IntervalSeconds),
+                     reporter,
+                     Log
+                ));
 
             }
 
