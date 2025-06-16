@@ -46,6 +46,7 @@ namespace Seq.App.AzureSecretCheck
                 foreach (var key in keys)
                 {
                     expirationDate = await azureApplication.GetKeyExpiration(i);
+                    var ageInDays = key.StartDateTime.HasValue ? Convert.ToInt32(Math.Floor((DateTime.UtcNow - key.StartDateTime.Value).TotalDays)) : -1;
                     if (expirationDate.HasValue && expirationDate < DateTime.UtcNow.AddDays(_validityDays))
                     {
                         outcome = OutcomeFailed;
@@ -66,11 +67,13 @@ namespace Seq.App.AzureSecretCheck
                                  , azureApplication.Tags
                                  , azureApplication.CreatedDateTime
                                  , expirationDate
+                                 , azureApplication.Owners
                                  , key.Description
                                  , outcome
                                  , level
                                  , "Certificate"
                                  , objectIsValid
+                                 , ageInDays
                                  ));
                     i++;
                 }
@@ -78,6 +81,8 @@ namespace Seq.App.AzureSecretCheck
                 foreach (var pass in passwords)
                 {
                     expirationDate = await azureApplication.GetPasswordExpiration(i);
+                    var ageInDays = pass.StartDateTime.HasValue ? Convert.ToInt32(Math.Floor((DateTime.UtcNow - pass.StartDateTime.Value).TotalDays)) : -1;
+
                     if (expirationDate.HasValue && expirationDate < DateTime.UtcNow.AddDays(_validityDays))
                     {
                         outcome = OutcomeFailed;
@@ -97,11 +102,13 @@ namespace Seq.App.AzureSecretCheck
                                  , azureApplication.Tags
                                  , azureApplication.CreatedDateTime
                                  , expirationDate
+                                 , azureApplication.Owners
                                  , pass.Description
                                  , outcome
                                  , level
                                  , "Password"
                                  , objectIsValid
+                                 , ageInDays
                                  ));
                     i++;
                 }
