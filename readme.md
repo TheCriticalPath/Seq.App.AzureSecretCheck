@@ -25,6 +25,8 @@ This plug-in requires an app registration with a client secret that has `Applica
 |Optional|Minimum validity period (days)|int|The minimum amount of days a certificate should be valid; the default is 30|
 
 ## Change Log
+### 2.1.5 - 2026/04/27
+- Added Notes and Owners from the App Registrations.
 ### 2.1.4 - 2025/01/14
 - Application Object Ids are now optional.  If the Application Object Ids are empty, all object Ids will be reviewed.
 - Line Comments (//) and Block Comments (/* */) are allowed in the Application Object Ids.
