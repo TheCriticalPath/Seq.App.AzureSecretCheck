@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Microsoft.Graph.Models;
 using Newtonsoft.Json;
 
 namespace Seq.App.AzureSecretCheck
@@ -11,6 +13,8 @@ namespace Seq.App.AzureSecretCheck
         public DateTimeOffset? EndDateTime { get; }
         public int ExpirationDays { get; }
         public string Description {get;}
+        public int KeyAgeInDays { get; }
+
         public AzureSecretCheckResultKey(string displayName, string description, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime)
         {
             this.Description = description;
@@ -18,6 +22,7 @@ namespace Seq.App.AzureSecretCheck
             StartDateTime = startDateTime;
             EndDateTime = endDateTime;
             ExpirationDays = EndDateTime.HasValue ? Convert.ToInt32(Math.Floor((EndDateTime.Value - DateTime.UtcNow).TotalDays)) : 9999;
+            KeyAgeInDays = StartDateTime.HasValue ? Convert.ToInt32(Math.Floor((DateTime.UtcNow - StartDateTime.Value).TotalDays)) : -1; 
         }
     }
     public class AzureSecretCheckResultPassword
@@ -28,7 +33,9 @@ namespace Seq.App.AzureSecretCheck
         public string Hint { get; }
         public string KeyId { get; }
         public int ExpirationDays { get; }
+        public int PasswordAgeInDays { get; }
         public string Description {get;}
+        public string Notes { get; }
         public AzureSecretCheckResultPassword(string description, string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime, string hint, string keyId)
         {
             this.Description = description;
@@ -38,7 +45,7 @@ namespace Seq.App.AzureSecretCheck
             Hint = hint;
             KeyId = keyId;
             ExpirationDays = EndDateTime.HasValue ? Convert.ToInt32(Math.Floor((EndDateTime.Value - DateTime.UtcNow).TotalDays)) : 9999;
-
+            PasswordAgeInDays = StartDateTime.HasValue ? Convert.ToInt32(Math.Floor((DateTime.UtcNow - StartDateTime.Value).TotalDays)) : -1;
         }
     }
     public class AzureSecretCheckResult
@@ -75,11 +82,15 @@ namespace Seq.App.AzureSecretCheck
         public string ApplicationDisabledByMicrosoftStatus { get; }
         public List<string> ApplicationTags { get; }
         public DateTimeOffset? CreatedDateTime { get; }
+        public int ApplicationAgeInDays => CreatedDateTime.HasValue ? Convert.ToInt32(Math.Floor((DateTime.UtcNow - CreatedDateTime.Value).TotalDays)) : -1;
+        public int SecretAgeInDays { get; }
         public DateTimeOffset? ExpirationDate { get; }
+        public List <DirectoryObject> Owners { get; }
         public int? ExpirationDays => ExpirationDate.HasValue ? Convert.ToInt32(Math.Floor((ExpirationDate.Value - DateTime.UtcNow).TotalDays)) : null;
         public string Description { get; }
         public string ObjectType { get; }
         public bool ObjectIsValid { get; }
+        public string Notes { get; }
         #endregion
         public string Outcome { get; }
         public AzureSecretCheckResult(DateTime utcTimestamp
@@ -91,11 +102,14 @@ namespace Seq.App.AzureSecretCheck
                                     , List<string> applicationTags
                                     , DateTimeOffset? createdDateTime
                                     , DateTimeOffset? expirationDate
+                                    , List<DirectoryObject> owners
                                     , string description
+                                    , string notes
                                     , string outcome
                                     , string level
                                     , string objectType
                                     , bool objectIsValid
+                                    , int ageInDays
                                     )
         {
             if (utcTimestamp.Kind != DateTimeKind.Utc)
@@ -112,10 +126,13 @@ namespace Seq.App.AzureSecretCheck
             ApplicationDisabledByMicrosoftStatus = applicationDisabledByMicrosoftStatus;
             ApplicationTags = applicationTags;
             CreatedDateTime = createdDateTime;
+            Owners = owners;
             this.ExpirationDate = expirationDate;
             this.ObjectIsValid = objectIsValid;
             this.ObjectType = objectType;
             this.Description = description;
+            this.Notes = notes;
+            SecretAgeInDays = ageInDays;
             //MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays}";
             //MessageTemplate = "App {"
         }

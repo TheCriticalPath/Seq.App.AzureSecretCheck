@@ -20,6 +20,8 @@ namespace Seq.App.AzureSecretCheck
         public List<PasswordCredential> PasswordCredentials { get { return _application.PasswordCredentials; } }
         public List<string> Tags { get { return _application.Tags; } }
 
+        public string Notes { get { return _application.Notes; } }
+        public List<DirectoryObject> Owners { get { return _application.Owners; } }            
         public string MaxPasswordExpirationString
         {
             get

@@ -48,6 +48,7 @@ while (!cts.IsCancellationRequested)
     {
         try
         {
+            
             string? sEvent = await newEventTask;
             JObject jEvent = JObject.Parse(sEvent);
             LogEvent lEvent = LogEventReader.ReadFromJObject(jEvent);
@@ -101,8 +102,8 @@ async Task RunSimulatedHost(TestHost testHost, IConfigurationRoot configuration,
 
 public class TestHost : IAppHost
 {
-    public App? App { get; set; }
-    public Host? Host { get; set; }
-    public ILogger? Logger { get; set; }
-    public string? StoragePath { get; set; }
+    public App App { get; set; }
+    public Host Host { get; set; }
+    public ILogger Logger { get; set; }
+    public string StoragePath { get; set; }
 }
