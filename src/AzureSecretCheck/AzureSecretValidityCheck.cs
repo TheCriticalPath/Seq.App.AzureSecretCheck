@@ -69,6 +69,7 @@ namespace Seq.App.AzureSecretCheck
                                  , expirationDate
                                  , azureApplication.Owners
                                  , key.Description
+                                 , azureApplication.Notes
                                  , outcome
                                  , level
                                  , "Certificate"
@@ -104,6 +105,7 @@ namespace Seq.App.AzureSecretCheck
                                  , expirationDate
                                  , azureApplication.Owners
                                  , pass.Description
+                                 , azureApplication.Notes
                                  , outcome
                                  , level
                                  , "Password"

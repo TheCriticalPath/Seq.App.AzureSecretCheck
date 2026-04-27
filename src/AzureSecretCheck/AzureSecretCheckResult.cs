@@ -35,6 +35,7 @@ namespace Seq.App.AzureSecretCheck
         public int ExpirationDays { get; }
         public int PasswordAgeInDays { get; }
         public string Description {get;}
+        public string Notes { get; }
         public AzureSecretCheckResultPassword(string description, string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime, string hint, string keyId)
         {
             this.Description = description;
@@ -89,6 +90,7 @@ namespace Seq.App.AzureSecretCheck
         public string Description { get; }
         public string ObjectType { get; }
         public bool ObjectIsValid { get; }
+        public string Notes { get; }
         #endregion
         public string Outcome { get; }
         public AzureSecretCheckResult(DateTime utcTimestamp
@@ -102,6 +104,7 @@ namespace Seq.App.AzureSecretCheck
                                     , DateTimeOffset? expirationDate
                                     , List<DirectoryObject> owners
                                     , string description
+                                    , string notes
                                     , string outcome
                                     , string level
                                     , string objectType
@@ -128,7 +131,8 @@ namespace Seq.App.AzureSecretCheck
             this.ObjectIsValid = objectIsValid;
             this.ObjectType = objectType;
             this.Description = description;
-            AgeInDays = ageInDays;
+            this.Notes = notes;
+            SecretAgeInDays = ageInDays;
             //MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays}";
             //MessageTemplate = "App {"
         }

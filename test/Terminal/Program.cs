@@ -48,6 +48,7 @@ while (!cts.IsCancellationRequested)
     {
         try
         {
+            
             string? sEvent = await newEventTask;
             JObject jEvent = JObject.Parse(sEvent);
             LogEvent lEvent = LogEventReader.ReadFromJObject(jEvent);
