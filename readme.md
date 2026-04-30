@@ -1,12 +1,16 @@
 # Seq.App.AzureSecretCheck
 
-![alt text](./src/AzureSecretCheck/Assets/AzureSecretCheckLogo.png "Title")
+![Icon](./src/AzureSecretCheck/Assets/AzureSecretCheckLogo.png "Title")
 
 Azure App Registration Secret Expiration Check.
 
 ## Description
 
 This plug-in checks the secrets and certificates of each of the apps specified and returns the days till expiration of the most recent date.
+
+## Support
+If this project has provided value and you would like to buy me a cup of coffee or simply say thanks.</br>
+[Send me a cup of coffee](https://ko-fi.com/thecriticalpath)
 
 ## Installation
 
@@ -25,9 +29,10 @@ This plug-in requires an app registration with a client secret that has `Applica
 |Optional|Minimum validity period (days)|int|The minimum amount of days a certificate should be valid; the default is 30|
 
 ## Change Log
-### 2.1.5 - 2026/04/27
+### 2.3.0 - 2026/04/30
 - Added Owners and Notes to the messages.
 - Updated Workflow
+- I would like to offer my sincerest appologies for the issues with the latest changes.  I have been dealing with the current equivalent of DLL hell.  Please forgive me for the issues.
 
 ### 2.1.4 - 2025/01/14
 - Application Object Ids are now optional.  If the Application Object Ids are empty, all object Ids will be reviewed.
