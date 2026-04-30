@@ -27,6 +27,7 @@ This plug-in requires an app registration with a client secret that has `Applica
 ## Change Log
 ### 2.1.5 - 2026/04/27
 - Added Owners and Notes to the messages.
+- Updated Workflow
 
 ### 2.1.4 - 2025/01/14
 - Application Object Ids are now optional.  If the Application Object Ids are empty, all object Ids will be reviewed.
