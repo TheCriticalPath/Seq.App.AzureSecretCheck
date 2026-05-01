@@ -60,6 +60,7 @@ namespace Seq.App.AzureSecretCheck
 
                     results.Add(new AzureSecretCheckResult(utcTimestamp
                                  , azureApplication.AppId
+                                 , azureApplication.AppIdUrl
                                  , azureApplication.AppObjectId
                                  , azureApplication.DisplayName
                                  , azureApplication.Description
@@ -96,6 +97,7 @@ namespace Seq.App.AzureSecretCheck
 
                     results.Add(new AzureSecretCheckResult(utcTimestamp
                                  , azureApplication.AppId
+                                 , azureApplication.AppIdUrl
                                  , azureApplication.AppObjectId
                                  , azureApplication.DisplayName
                                  , azureApplication.Description

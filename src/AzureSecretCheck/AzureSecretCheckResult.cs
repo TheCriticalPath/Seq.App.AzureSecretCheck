@@ -36,6 +36,7 @@ namespace Seq.App.AzureSecretCheck
         public int PasswordAgeInDays { get; }
         public string Description {get;}
         public string Notes { get; }
+       
         public AzureSecretCheckResultPassword(string description, string displayName, DateTimeOffset? startDateTime, DateTimeOffset? endDateTime, string hint, string keyId)
         {
             this.Description = description;
@@ -76,6 +77,7 @@ namespace Seq.App.AzureSecretCheck
         #endregion
         #region Azure Application Properties
         public string ApplicationAppId { get; }
+        public string ApplicationAppIdUrl {  get; }
         public string ApplicationAppObjectId { get; }
         public string ApplicationDisplayName { get; }
         public string ApplicationDescription { get; }
@@ -95,6 +97,7 @@ namespace Seq.App.AzureSecretCheck
         public string Outcome { get; }
         public AzureSecretCheckResult(DateTime utcTimestamp
                                     , string applicationAppId
+                                    , string applicationAppIdUrl
                                     , string applicationAppObjectId
                                     , string applicationDisplayName
                                     , string applicationDescription
@@ -118,6 +121,7 @@ namespace Seq.App.AzureSecretCheck
             }
             UtcTimestamp = utcTimestamp;
             ApplicationAppId = applicationAppId ?? throw new ArgumentNullException(nameof(applicationAppId));
+            ApplicationAppIdUrl = applicationAppIdUrl ?? throw new ArgumentNullException(nameof(applicationAppIdUrl));
             ApplicationAppObjectId = applicationAppObjectId ?? throw new ArgumentNullException(nameof(applicationAppObjectId));
             ApplicationDisplayName = applicationDisplayName ?? throw new ArgumentNullException(nameof(applicationDisplayName));
             Outcome = outcome ?? throw new ArgumentNullException(nameof(outcome));
@@ -132,6 +136,7 @@ namespace Seq.App.AzureSecretCheck
             this.ObjectType = objectType;
             this.Description = description;
             this.Notes = notes;
+    
             SecretAgeInDays = ageInDays;
             //MessageTemplate = "App {ApplicationDisplayName} ({ApplicationAppId}) {Outcome}: {ObjectType} named {Description} expires in {ExpirationDays}";
             //MessageTemplate = "App {"

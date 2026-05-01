@@ -8,6 +8,7 @@ namespace Seq.App.AzureSecretCheck
     {
         private Microsoft.Graph.Models.Application _application;
         public string AppId { get { return _application.AppId; } }
+        public string AppIdUrl { get { return $"https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/{_application.AppId}"; } }
         /// <summary>
         /// Corresponds to id from the Application Object.
         /// </summary>
